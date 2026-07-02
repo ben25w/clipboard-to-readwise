@@ -1,21 +1,21 @@
 import AppKit
 import UserNotifications
 
-@main
-@MainActor
 final class ClipboardToReadwiseApp: NSObject, NSApplicationDelegate, UNUserNotificationCenterDelegate {
     private var coordinator: AppCoordinator?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        NSApp.setActivationPolicy(.regular)
+        Task { @MainActor in
+            NSApp.setActivationPolicy(.regular)
 
-        let notificationCenter = UNUserNotificationCenter.current()
-        notificationCenter.delegate = self
-        notificationCenter.requestAuthorization(options: [.alert, .sound]) { _, _ in }
+            let notificationCenter = UNUserNotificationCenter.current()
+            notificationCenter.delegate = self
+            _ = try? await notificationCenter.requestAuthorization(options: [.alert, .sound])
 
-        let coordinator = AppCoordinator()
-        coordinator.start()
-        self.coordinator = coordinator
+            let coordinator = AppCoordinator()
+            coordinator.start()
+            self.coordinator = coordinator
+        }
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
