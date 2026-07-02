@@ -4,7 +4,7 @@ import Foundation
 
 @MainActor
 final class AppCoordinator: NSObject {
-    private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
+    private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
     private let tokenStore = KeychainTokenStore()
     private lazy var preferences = PreferencesStore(tokenStore: tokenStore)
     private lazy var readwiseAPI = ReadwiseAPI()
@@ -26,11 +26,14 @@ final class AppCoordinator: NSObject {
     private func configureStatusItem() {
         guard let button = statusItem.button else { return }
         button.image = Icons.idle
-        button.imagePosition = .imageOnly
+        button.title = "RW"
+        button.imagePosition = .imageLeft
+        button.font = .systemFont(ofSize: NSFont.systemFontSize, weight: .semibold)
         button.toolTip = "Send clipboard to Readwise"
         button.target = self
         button.action = #selector(handleStatusItemClick(_:))
         button.sendAction(on: [.leftMouseUp, .rightMouseUp])
+        statusItem.length = NSStatusItem.variableLength
     }
 
     @objc private func handleStatusItemClick(_ sender: Any?) {
@@ -153,6 +156,7 @@ final class AppCoordinator: NSObject {
     private func advanceSendingFrame() {
         guard let button = statusItem.button else { return }
         button.image = Icons.sending
+        button.title = "RW"
         button.contentTintColor = Icons.sendingColors[frameIndex % Icons.sendingColors.count]
         button.toolTip = "Sending clipboard to Readwise..."
         frameIndex += 1
@@ -167,6 +171,7 @@ final class AppCoordinator: NSObject {
         stopSendingAnimation()
         guard let button = statusItem.button else { return }
         button.image = Icons.success
+        button.title = "RW"
         button.contentTintColor = .systemGreen
         button.toolTip = "Saved \(result.highlightCount) highlight\(result.highlightCount == 1 ? "" : "s") to Readwise"
 
@@ -181,6 +186,7 @@ final class AppCoordinator: NSObject {
         stopSendingAnimation()
         guard let button = statusItem.button else { return }
         button.image = Icons.idle
+        button.title = "RW"
         button.contentTintColor = nil
         button.toolTip = "Send clipboard to Readwise"
     }
