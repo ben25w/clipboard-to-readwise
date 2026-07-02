@@ -7,7 +7,7 @@ final class ClipboardToReadwiseApp: NSObject, NSApplicationDelegate, UNUserNotif
     private var coordinator: AppCoordinator?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        NSApp.setActivationPolicy(.accessory)
+        NSApp.setActivationPolicy(.regular)
 
         let notificationCenter = UNUserNotificationCenter.current()
         notificationCenter.delegate = self

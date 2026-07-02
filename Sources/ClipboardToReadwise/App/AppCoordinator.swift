@@ -16,11 +16,27 @@ final class AppCoordinator: NSObject {
     private var restoreIdleWorkItem: DispatchWorkItem?
 
     func start() {
+        configureApplicationMenu()
         configureStatusItem()
+        openSettings()
+    }
 
-        if !preferences.hasToken {
-            openSettings()
+    private func configureApplicationMenu() {
+        let appMenu = NSMenu()
+        appMenu.addItem(NSMenuItem(title: "Send Clipboard to Readwise", action: #selector(sendClipboardMenuItem(_:)), keyEquivalent: "s"))
+        appMenu.addItem(NSMenuItem(title: "Settings...", action: #selector(openSettingsMenuItem(_:)), keyEquivalent: ","))
+        appMenu.addItem(.separator())
+        appMenu.addItem(NSMenuItem(title: "Quit Clipboard to Readwise", action: #selector(quitMenuItem(_:)), keyEquivalent: "q"))
+
+        for item in appMenu.items {
+            item.target = self
         }
+
+        let mainMenu = NSMenu()
+        let appMenuItem = NSMenuItem()
+        appMenuItem.submenu = appMenu
+        mainMenu.addItem(appMenuItem)
+        NSApp.mainMenu = mainMenu
     }
 
     private func configureStatusItem() {
